@@ -1,0 +1,11 @@
+<div class="container mt-5">
+  <!-- Styled Heading -->
+  <h1 class="text-center text-danger fw-bold mb-4">Your approval has been rejected!</h1>
+
+  <!-- Styled Form -->
+  <div class="d-flex justify-content-center">
+    <%= form_with(url: pending_user_path(current_user), method: :patch, local: true) do %>
+      <%= submit_tag 'Send again', class: 'btn btn-outline-success', data: { confirm: 'Are you sure?' } %>
+    <% end %>
+  </div>
+</div>

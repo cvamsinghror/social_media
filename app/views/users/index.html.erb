@@ -1,0 +1,45 @@
+<%= link_to 'Back to Home page', articles_path, class: 'btn btn-primary mb-4' %>
+
+<%= link_to 'Friend Requests', friend_requests_users_path, class: 'btn btn-primary mb-4' %>
+
+
+
+<h1>All Users</h1>
+
+<div class="container mt-5">
+  <%= search_form_for @q do |f| %>
+    <div class="input-group mb-3">
+      <%= f.search_field :first_name_or_last_name_cont, class: 'form-control', placeholder: 'Search users...' %>
+      <div class="input-group-append">
+        <%= f.submit 'Search', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <% @users.each do |user| %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title"><%= "#{user.first_name} #{user.last_name}" %></h5>
+            <p class="card-text"><strong>Address:</strong> <%= user.address %></p>
+            <p class="card-text"><strong>Email:</strong> <%= user.email %></p>
+
+            <!-- Check if there is a pending friend request -->
+            <% if current_user.pending_friend_request?(user) || user.pending_friend_request?(current_user) %>
+              <p class="text-muted">Friend request pending...</p>
+
+            <!-- Check if they are already friends -->
+            <% elsif current_user.friends_with?(user) %>
+              <p class="text-success">You are friends</p>
+
+            <!-- Otherwise, show the "Send Friend Request" button -->
+            <% else %>
+              <%= button_to 'Send Friend Request', send_friend_request_user_path(user), method: :post, class: 'btn btn-primary w-100' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

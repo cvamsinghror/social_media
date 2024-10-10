@@ -1,0 +1,9 @@
+document.getElementById('likes-count').innerHTML = '<%= @article.get_upvotes.size %>';
+var likeButton = document.getElementById('like-button');
+if (<%= current_user.voted_up_on?(@article) %>) {
+  likeButton.classList.remove('btn-outline-primary');
+  likeButton.classList.add('btn-primary');
+} else {
+  likeButton.classList.remove('btn-primary');
+  likeButton.classList.add('btn-outline-primary');
+}

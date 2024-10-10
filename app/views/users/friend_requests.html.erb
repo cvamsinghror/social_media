@@ -1,0 +1,37 @@
+<div class="container mt-5">
+  <h1 class="mb-4">Friend Requests</h1>
+
+  <%# Debug information %>
+  <% if @pending_friend_requests.nil? %>
+    <p>No pending friend requests (variable is nil).</p>
+  <% elsif @pending_friend_requests.empty? %>
+    <p>No pending friend requests.</p>
+  <% else %>
+    <p>Total pending requests: <%= @pending_friend_requests.size %></p>
+  <% end %>
+
+  <% if @pending_friend_requests.present? %>
+    <div class="list-group">
+      <% @pending_friend_requests.each do |friendship| %>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span><%= friendship.user.email %></span>
+          <div>
+          
+          <!-- Accept Friend Request Form -->
+<%= form_with(url: accept_friendship_path(friendship), method: :patch, local: true) do %>
+  <%= hidden_field_tag :status, 'accept' %>
+  <%= submit_tag 'Accept', class: 'btn btn-outline-success btn-sm', data: { confirm: 'Are you sure?' } %>
+<% end %>
+
+<!-- Reject Friend Request Form -->
+<%= form_with(url: reject_friendship_path(friendship), method: :patch, local: true) do %>
+  <%= hidden_field_tag :status, 'reject' %>
+  <%= submit_tag 'Reject', class: 'btn btn-outline-danger btn-sm', data: { confirm: 'Are you sure?' } %>
+<% end %>
+
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

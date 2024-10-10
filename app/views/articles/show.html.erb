@@ -1,0 +1,58 @@
+<%= link_to 'Back to Home page', articles_path, class: 'btn btn-primary mb-4' %>
+
+<div class="container mt-5">
+  <!-- Article Image -->
+  <% if @article.avatar.attached? %>
+    <div class="text-center mb-4">
+      <%= image_tag url_for(@article.avatar), class: "img-fluid rounded" %>
+    </div>
+  <% end %>
+
+  <!-- Article Title, Summary, and Content -->
+  <h1 class="display-4"><%= @article.title %></h1>
+  <p class="lead"><%= @article.summary %></p>
+  <p><%= @article.content %></p>
+
+  <!-- Voting Section -->
+  <div id="voting" class="my-4 d-flex align-items-center">
+    <% if current_user %>
+      <%= button_to 'Like', toggle_like_article_path(@article), method: :put, remote: true, class: "btn #{current_user.voted_up_on?(@article) ? 'btn-primary' : 'btn-outline-primary'}", id: 'like-button' %>
+    <% else %>
+      <%= link_to 'Like', login_path, class: 'btn btn-outline-primary' %>
+    <% end %>
+    <span id="likes-count" class="ms-2"><%= @article.get_upvotes.size %> Likes</span>
+  </div>
+
+  <!-- Comments Section -->
+  <h2 class="h4 mt-4">Comments</h2>
+  <div class="list-group mb-4">
+    <% @article.comments.each do |comment| %>
+      <div class="list-group-item">
+        <div class="d-flex justify-content-between align-items-center">
+          <strong class="text-primary"><%= comment.commenter %>:</strong>
+          <div class="btn-group" role="group">
+            <% if comment.user == current_user %>
+              <%= link_to 'Edit', edit_article_comment_path(@article, comment), class: 'btn btn-secondary btn-sm' %>
+            <% end %>
+            <% if comment.user == current_user || @article.user == current_user %>
+              <%= link_to 'Delete', article_comment_path(@article, comment), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
+            <% end %>
+          </div>
+        </div>
+        <p class="mb-0 mt-2"><%= comment.body %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Add Comment Section -->
+  <h2 class="h4 mt-4">Add a comment:</h2>
+  <%= form_with model: [@article, @article.comments.build], local: true, class: "mb-4" do |form| %>
+    <div class="mb-3">
+      <%= form.label :comment, class: "form-label" %>
+      <%= form.text_area :body, class: "form-control", rows: 3 %>
+    </div>
+    <div>
+      <%= form.submit "Add Comment", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

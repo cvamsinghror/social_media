@@ -1,0 +1,23 @@
+<!-- app/views/users/friends.html.erb -->
+
+<h1>Your Friends</h1>
+<%= link_to 'Back to Profile', user_path(current_user), class: 'btn btn-secondary' %>
+
+<% if @friends.any? %>
+<% @friends.each do |friend| %>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-primary"><%= friend.email %></h5>
+          <p class="card-text text-muted mb-4"> Name :- <%=  friend.first_name  %> </p>
+          <div class="mt-auto">
+           <%= link_to 'Show profile', user_path(friend), class: 'd-inline-block mr-2 btn btn-outline-success' %> 
+        
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <% else %>
+  <p>You have no friends yet.</p>
+<% end %>

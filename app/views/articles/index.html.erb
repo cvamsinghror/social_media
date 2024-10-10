@@ -1,0 +1,56 @@
+<div class="container mt-5">
+  <!-- Create Article Button -->
+  <div class="d-flex justify-content-end mb-4">
+    <%= link_to 'Create new article', new_article_path, class: 'btn btn-primary' %>
+    
+  </div>
+
+
+
+  <!-- Articles Row -->
+  <div class="row g-4">
+    <% @articles.each do |article| %>
+      <div class="col-md-4">
+        <!-- Article Card -->
+        <div class="card h-100 shadow-sm">
+          <!-- Article Image -->
+          <% if article.avatar.attached? %>
+            <%= image_tag url_for(article.avatar), class: 'card-img-top', style: 'height: 200px; object-fit: cover;' %>
+          <% end %>
+
+          <div class="card-body d-flex flex-column">
+            <!-- Article Title -->
+            <h5 class="card-title"><%= article.title %></h5>
+            <!-- Article Summary -->
+            <p class="card-text text-muted"><%= article.summary %></p>
+            <!-- Article Content -->
+            <p class="card-text"><%= truncate(article.content, length: 100) %></p>
+            
+            <!-- Like Button and Count -->
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+              <% if current_user %>
+                <%= button_to 'Like', toggle_like_article_path(article), method: :put, remote: true, class: "btn btn-sm #{current_user.voted_up_on?(article) ? 'btn-primary' : 'btn-outline-primary'}", id: "like-button-#{article.id}" %>
+              <% else %>
+                <%= link_to 'Like', new_user_session_path, class: 'btn btn-outline-primary btn-sm' %>
+              <% end %>
+              <span id="likes-count-<%= article.id %>" class="ms-2"><%= article.get_upvotes.size %> Likes</span>
+            </div>
+
+            <!-- Edit and Delete Buttons for Article Owner -->
+            <% if article.user == current_user %>
+              <div class="mt-3 d-flex justify-content-between">
+                <%= link_to 'Edit', edit_article_path(article), class: 'btn btn-secondary btn-sm' %>
+                <%= link_to 'Destroy', article_path(article), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
+              </div>
+            <% end %>
+
+            <!-- Add Comment Button -->
+            <div class="mt-3">
+              <%= link_to 'Add Comment', article_path(article, anchor: 'comments'), class: 'btn btn-info btn-sm w-100' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
